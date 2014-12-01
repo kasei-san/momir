@@ -11,13 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141130230548) do
+ActiveRecord::Schema.define(version: 20141201050303) do
 
   create_table "cards", force: true do |t|
     t.string   "name"
     t.string   "japanese_name"
     t.string   "mana_cost"
-    t.string   "type"
+    t.string   "card_type"
     t.text     "text"
     t.string   "power_toughness"
     t.integer  "converted_mana_cost"
