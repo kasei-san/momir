@@ -19,5 +19,10 @@ RSpec.describe Card, :type => :model do
     it { expect(subject.japanese_name).to eq('肉切り屋のグール') }
     it { expect(subject.mana_cost).to eq('(3)(黒)') }
     it { expect(subject.card_type).to eq('クリーチャー --- ゾンビ(Zombie)') }
+    it { expect(subject.text).to eq(<<-EOS.strip) }
+先制攻撃
+このターン、肉切り屋のグールによってダメージを与えられたクリーチャーが１体死亡するたび、あなたはそのクリーチャーのタフネスに等しい点数のライフを得る。
+    EOS
+    it { expect(subject.power_toughness).to eq('3/2') }
   end
 end
