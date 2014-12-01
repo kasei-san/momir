@@ -25,5 +25,29 @@ RSpec.describe Card, :type => :model do
     EOS
     it { expect(subject.power_toughness).to eq('3/2') }
     it { expect(subject.converted_mana_cost).to eq(4) }
+
+    context '混成マナコスト' do
+      let(:text){ <<-EOS }
+　英語名：Azorius Guildmage
+日本語名：アゾリウスのギルド魔道士（あぞりうすのぎるどまどうし）
+　コスト：(白/青)(白/青)
+　タイプ：クリーチャー --- ヴィダルケン(Vedalken)・ウィザード(Wizard)
+（(白/青)は(白)でも(青)でも支払うことができる。）
+(２)(白)：クリーチャー１体を対象とし、それをタップする。
+(２)(青)：起動型能力１つを対象とし、それを打ち消す。（マナ能力は対象にできない。）
+　Ｐ／Ｔ：2/2
+イラスト：Christopher Moeller
+　セット：Dissension
+　稀少度：アンコモン
+      EOS
+
+      it { expect(subject.mana_cost).to eq('(白/青)(白/青)') }
+      it { expect(subject.converted_mana_cost).to eq(2) }
+
+
+    end
+    it '混成(ローウィンの)マナコスト'
+    it '変身カード'
+    it '反転カード'
   end
 end
