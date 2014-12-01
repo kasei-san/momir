@@ -24,5 +24,6 @@ RSpec.describe Card, :type => :model do
 このターン、肉切り屋のグールによってダメージを与えられたクリーチャーが１体死亡するたび、あなたはそのクリーチャーのタフネスに等しい点数のライフを得る。
     EOS
     it { expect(subject.power_toughness).to eq('3/2') }
+    it { expect(subject.converted_mana_cost).to eq(4) }
   end
 end
