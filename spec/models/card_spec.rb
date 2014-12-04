@@ -1,22 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Card, :type => :model do
-  describe '#parse' do
-    subject { Card.parse(text) }
 
-    let(:text){ <<-EOS }
-　英語名：Abattoir Ghoul
-日本語名：肉切り屋のグール（にくきりやのぐーる）
-　コスト：(３)(黒)
-　タイプ：クリーチャー --- ゾンビ(Zombie)
-先制攻撃#{0x0D.chr}
-このターン、肉切り屋のグールによってダメージを与えられたクリーチャーが１体死亡するたび、あなたはそのクリーチャーのタフネスに等しい点数のライフを得る。
-　Ｐ／Ｔ：3/2
-イラスト：Volkan Baga
-　セット：Innistrad
-　稀少度：アンコモン
-    EOS
-
+  shared_examples_for 'abattoir_ghoul' do
     it { expect(subject.name).to eq('Abattoir Ghoul') }
     it { expect(subject.japanese_name).to eq('肉切り屋のグール') }
     it { expect(subject.mana_cost).to eq('(3)(黒)') }
@@ -32,6 +18,37 @@ RSpec.describe Card, :type => :model do
     it { expect(subject.other_japanese_name).to be_blank }
     it { expect(subject.other_card_type).to be_blank }
     it { expect(subject.other_text).to be_blank }
+  end
+
+
+  describe '#import' do
+    let(:path) { File.join(*%W[#{File.dirname(__FILE__)} .. data card_data.txt]) }
+    it { expect { Card.import(path) }.to change(Card, :count).from(0).to(2) }
+
+    describe 'check card_data' do
+      before { Card.import(path) }
+      subject { Card.find_by_name("Abattoir Ghoul") }
+      it_should_behave_like 'abattoir_ghoul'
+    end
+  end
+
+  describe '#parse' do
+    subject { Card.parse(text) }
+
+    let(:text){ (<<-EOS).strip }
+　英語名：Abattoir Ghoul
+日本語名：肉切り屋のグール（にくきりやのぐーる）
+　コスト：(３)(黒)
+　タイプ：クリーチャー --- ゾンビ(Zombie)
+先制攻撃#{0x0D.chr}
+このターン、肉切り屋のグールによってダメージを与えられたクリーチャーが１体死亡するたび、あなたはそのクリーチャーのタフネスに等しい点数のライフを得る。
+　Ｐ／Ｔ：3/2
+イラスト：Volkan Baga
+　セット：Innistrad
+　稀少度：アンコモン
+    EOS
+
+    it_should_behave_like 'abattoir_ghoul'
 
     context '混成マナコスト' do
       let(:text){ <<-EOS }

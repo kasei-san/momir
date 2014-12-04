@@ -1,13 +1,21 @@
 class Card < ActiveRecord::Base
-  def self.parse(text)
+  def self.import(path)
+    File.open(path) do |f|
+      while f.gets("\n\n") do
+        Card.parse($_.strip).save if $_.strip.present?
+      end
+    end
+  end
 
+  def self.parse(text)
+    return if text.blank?
     parse_text = text.dup
     parse_text.gsub!(/^　タイプ：.*$\n/, '\&テキスト：')     # テキストだけヘッダが無いので追加
     parse_text.gsub!("　", '').gsub!(/([^\r])\n/, "\\1\n\n") # テキストだけ\r\nで改行されている
-    parse_text.gsub!(/^(イラスト|セット|稀少度).*$\n\n/, '') # 変身・反転カードのときめんどいので削除
+    parse_text.gsub!(/^(イラスト|セット|稀少度).*($\n+|\z)/, '') # 変身・反転カードのときめんどいので削除
 
     card_data = parse_text.split("\n\n").map{|str| str.split('：', 2)}.each_slice(6).map(&:to_h)
-    hash = card_data.first
+
     hash = card_data.first
     hash['日本語名'].sub!(/（.*$/, '')
     hash['テキスト'].sub!(/\r/, '')
