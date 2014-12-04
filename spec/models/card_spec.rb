@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Card, :type => :model do
   describe '#parse' do
-
     subject { Card.parse(text) }
 
     let(:text){ <<-EOS }
@@ -18,17 +17,21 @@ RSpec.describe Card, :type => :model do
 　稀少度：アンコモン
     EOS
 
-    it { expect(subject.size).to eq(1) }
-    it { expect(subject.first.name).to eq('Abattoir Ghoul') }
-    it { expect(subject.first.japanese_name).to eq('肉切り屋のグール') }
-    it { expect(subject.first.mana_cost).to eq('(3)(黒)') }
-    it { expect(subject.first.card_type).to eq('クリーチャー --- ゾンビ(Zombie)') }
-    it { expect(subject.first.text).to eq(<<-EOS.strip) }
+    it { expect(subject.name).to eq('Abattoir Ghoul') }
+    it { expect(subject.japanese_name).to eq('肉切り屋のグール') }
+    it { expect(subject.mana_cost).to eq('(3)(黒)') }
+    it { expect(subject.card_type).to eq('クリーチャー --- ゾンビ(Zombie)') }
+    it { expect(subject.text).to eq(<<-EOS.strip) }
 先制攻撃
 このターン、肉切り屋のグールによってダメージを与えられたクリーチャーが１体死亡するたび、あなたはそのクリーチャーのタフネスに等しい点数のライフを得る。
     EOS
-    it { expect(subject.first.power_toughness).to eq('3/2') }
-    it { expect(subject.first.converted_mana_cost).to eq(4) }
+    it { expect(subject.power_toughness).to eq('3/2') }
+    it { expect(subject.converted_mana_cost).to eq(4) }
+
+    it { expect(subject.other_name).to be_blank }
+    it { expect(subject.other_japanese_name).to be_blank }
+    it { expect(subject.other_card_type).to be_blank }
+    it { expect(subject.other_text).to be_blank }
 
     context '混成マナコスト' do
       let(:text){ <<-EOS }
@@ -45,8 +48,8 @@ RSpec.describe Card, :type => :model do
 　稀少度：アンコモン
       EOS
 
-      it { expect(subject.first.mana_cost).to eq('(白/青)(白/青)') }
-      it { expect(subject.first.converted_mana_cost).to eq(2) }
+      it { expect(subject.mana_cost).to eq('(白/青)(白/青)') }
+      it { expect(subject.converted_mana_cost).to eq(2) }
     end
 
     context '反転カード' do
@@ -69,29 +72,24 @@ RSpec.describe Card, :type => :model do
 　稀少度：アンコモン
       EOS
 
-      it { expect(subject.size).to eq(2) }
-
-      it { expect(subject.first.name).to eq('Student of Elements') }
-      it { expect(subject.first.japanese_name).to eq('精霊の学び手') }
-      it { expect(subject.first.mana_cost).to eq('(1)(青)') }
-      it { expect(subject.first.card_type).to eq('クリーチャー --- 人間(Human)・ウィザード(Wizard)') }
-      it { expect(subject.first.text).to eq(<<-EOS.strip) }
+      it { expect(subject.name).to eq('Student of Elements') }
+      it { expect(subject.japanese_name).to eq('精霊の学び手') }
+      it { expect(subject.mana_cost).to eq('(1)(青)') }
+      it { expect(subject.card_type).to eq('クリーチャー --- 人間(Human)・ウィザード(Wizard)') }
+      it { expect(subject.text).to eq(<<-EOS.strip) }
 精霊の学び手が飛行を持っているとき、精霊の学び手を反転する。
       EOS
-      it { expect(subject.first.power_toughness).to eq('1/1') }
-      it { expect(subject.first.converted_mana_cost).to eq(2) }
+      it { expect(subject.power_toughness).to eq('1/1') }
+      it { expect(subject.converted_mana_cost).to eq(2) }
 
-      it { expect(subject.last.name).to eq('Tobita, Master of Winds') }
-      it { expect(subject.last.japanese_name).to eq('風の達人、鳶太') }
-      it { expect(subject.last.mana_cost).to eq('(1)(青)') }
-      it { expect(subject.last.card_type).to eq('伝説のクリーチャー --- 人間(Human)・ウィザード(Wizard)') }
-      it { expect(subject.last.text).to eq(<<-EOS.strip) }
+      it { expect(subject.other_name).to eq('Tobita, Master of Winds') }
+      it { expect(subject.other_japanese_name).to eq('風の達人、鳶太') }
+      it { expect(subject.other_card_type).to eq('伝説のクリーチャー --- 人間(Human)・ウィザード(Wizard)') }
+      it { expect(subject.other_text).to eq(<<-EOS.strip) }
 あなたがコントロールするクリーチャーは飛行を持つ。
       EOS
-      it { expect(subject.last.power_toughness).to eq('3/3') }
-      it { expect(subject.last.converted_mana_cost).to eq(-1) }
+      it { expect(subject.other_power_toughness).to eq('3/3') }
     end
-
 
     it '変身カード'
   end

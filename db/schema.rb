@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141201050303) do
+ActiveRecord::Schema.define(version: 20141204111432) do
 
   create_table "cards", force: true do |t|
     t.string   "name"
@@ -23,6 +23,11 @@ ActiveRecord::Schema.define(version: 20141201050303) do
     t.integer  "converted_mana_cost"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "other_name"
+    t.string   "other_japanese_name"
+    t.string   "other_card_type"
+    t.text     "other_text"
+    t.string   "other_power_toughness"
   end
 
   add_index "cards", ["converted_mana_cost"], name: "index_cards_on_converted_mana_cost"
