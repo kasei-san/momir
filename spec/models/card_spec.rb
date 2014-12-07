@@ -41,8 +41,8 @@ RSpec.describe Card, :type => :model do
     it { expect(subject.mana_cost).to eq('(緑)') }
     it { expect(subject.card_type).to eq('クリーチャー --- 人間(Human)・ウィザード(Wizard)') }
     it { expect(subject.text).to eq(<<-EOS.strip) }
-(青),(Ｔ)：クリーチャー１体を対象とする。それはターン終了時まで飛行を得る。
-(黒),(Ｔ)：クリーチャー１体を対象とする。それはターン終了時まで-2/-0の修整を受ける。
+(青),(Ｔ) : クリーチャー１体を対象とする。それはターン終了時まで飛行を得る。
+(黒),(Ｔ) : クリーチャー１体を対象とする。それはターン終了時まで-2/-0の修整を受ける。
     EOS
     it { expect(subject.power_toughness).to eq('1/1') }
     it { expect(subject.converted_mana_cost).to eq(1) }
@@ -288,7 +288,7 @@ Lv4+ :
       it { expect(subject.mana_cost).to eq('(0)') }
       it { expect(subject.card_type).to eq('クリーチャー --- コボルド(Kobold)') }
       it { expect(subject.text).to eq(<<-EOS.strip) }
-色指標：〔赤〕
+色指標 : 〔赤〕
       EOS
       it { expect(subject.power_toughness).to eq('0/1') }
       it { expect(subject.converted_mana_cost).to eq(0) }
@@ -328,7 +328,7 @@ Lv4+ :
       it { expect(subject.mana_cost).to eq('(2)(緑)') }
       it { expect(subject.card_type).to eq('クリーチャー --- 人間(Human)・射手(Archer)・狼男(Werewolf)') }
       it { expect(subject.text).to eq(<<-EOS.strip) }
-(Ｔ)：飛行を持つクリーチャー１体を対象とする。夜明けのレインジャーはそれに２点のダメージを与える。
+(Ｔ) : 飛行を持つクリーチャー１体を対象とする。夜明けのレインジャーはそれに２点のダメージを与える。
 各アップキープの開始時に、直前のターンに呪文が唱えられていなかった場合、夜明けのレインジャーを変身させる。
       EOS
       it { expect(subject.power_toughness).to eq('2/2') }
@@ -338,11 +338,55 @@ Lv4+ :
       it { expect(subject.other_japanese_name).to eq('黄昏の捕食者') }
       it { expect(subject.other_card_type).to eq('クリーチャー --- 狼男(Werewolf)') }
       it { expect(subject.other_text).to eq(<<-EOS.strip) }
-色指標：〔緑〕
-(赤),(Ｔ)：クリーチャー１体を対象とする。黄昏の捕食者はそれと格闘を行う。（それぞれはもう一方に自身のパワーに等しい点数のダメージを与える。）
+色指標 : 〔緑〕
+(赤),(Ｔ) : クリーチャー１体を対象とする。黄昏の捕食者はそれと格闘を行う。（それぞれはもう一方に自身のパワーに等しい点数のダメージを与える。）
 各アップキープの開始時に、直前のターンにプレイヤー１人が２つ以上の呪文を唱えていた場合、黄昏の捕食者を変身させる。
       EOS
       it { expect(subject.other_power_toughness).to eq('4/4') }
+    end
+
+    context '変身カード(エンチャント) ' do
+      let(:text){ <<-EOS }
+　英語名：Soul Seizer
+日本語名：魂を捕えるもの（たましいをとらえるもの）
+　コスト：(３)(青)(青)
+　タイプ：クリーチャー --- スピリット(Spirit)
+飛行
+魂を捕えるものがプレイヤー１人に戦闘ダメージを与えたとき、そのプレイヤーがコントロールするクリーチャー１体を対象とする。あなたは魂を捕えるものを変身させてもよい。そうした場合、あなたはそれをそのクリーチャーにつける。
+　Ｐ／Ｔ：1/3
+イラスト：Lucas Graciano
+　英語名：Ghastly Haunting
+日本語名：恐ろしい憑依（おそろしいひょうい）
+　コスト：
+　色指標：〔青〕
+　タイプ：エンチャント --- オーラ(Aura)
+エンチャント（クリーチャー）
+あなたはエンチャントされているクリーチャーをコントロールする。
+イラスト：Lucas Graciano
+　セット：Dark Ascension
+　稀少度：アンコモン
+      EOS
+
+      it { expect(subject.name).to eq('Soul Seizer') }
+      it { expect(subject.japanese_name).to eq('魂を捕えるもの') }
+      it { expect(subject.mana_cost).to eq('(3)(青)(青)') }
+      it { expect(subject.card_type).to eq('クリーチャー --- スピリット(Spirit)') }
+      it { expect(subject.text).to eq(<<-EOS.strip) }
+飛行
+魂を捕えるものがプレイヤー１人に戦闘ダメージを与えたとき、そのプレイヤーがコントロールするクリーチャー１体を対象とする。あなたは魂を捕えるものを変身させてもよい。そうした場合、あなたはそれをそのクリーチャーにつける。
+      EOS
+      it { expect(subject.power_toughness).to eq('1/3') }
+      it { expect(subject.converted_mana_cost).to eq(5) }
+
+      it { expect(subject.other_name).to eq('Ghastly Haunting') }
+      it { expect(subject.other_japanese_name).to eq('恐ろしい憑依') }
+      it { expect(subject.other_card_type).to eq('エンチャント --- オーラ(Aura)') }
+      it { expect(subject.other_text).to eq(<<-EOS.strip) }
+色指標 : 〔青〕
+エンチャント（クリーチャー）
+あなたはエンチャントされているクリーチャーをコントロールする。
+      EOS
+      it { expect(subject.other_power_toughness).to be_blank }
     end
   end
 end

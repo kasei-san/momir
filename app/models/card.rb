@@ -20,13 +20,15 @@ class Card < ActiveRecord::Base
       "#{$2}#{$1}\n"
     end
 
+    # テキスト内の改行を一旦削除
     if parse_text =~ /Ｌｖアップ/
-      parse_text.gsub!(/テキスト：(.*)\n　Ｐ／Ｔ/m) do |text| # テキスト内の改行を一旦削除
+      parse_text.gsub!(/テキスト：(.*)\n　Ｐ／Ｔ/m) do |text| # LvUp カードの場合、複数の P/T があるので、最長一致
         "テキスト：#{$1.gsub("\n", '@@@').gsub('：', ' : ')}\n　Ｐ／Ｔ"
       end
     else
-      parse_text.gsub!(/テキスト：(.*?)\n　Ｐ／Ｔ/m) do |text| # テキスト内の改行を一旦削除
-        "テキスト：#{$1.gsub("\n", '@@@')}\n　Ｐ／Ｔ"
+      parse_text.gsub!(/テキスト：(.*?)\n(　Ｐ／Ｔ|イラスト)：/m) do |text| # テキスト内の改行を一旦削除
+        text, key = $1, $2
+        "テキスト：#{text.gsub("\n", '@@@').gsub('：', ' : ')}\n　#{key}："
       end
     end
     parse_text.gsub!("　", '').gsub!(/\r/, "") # テキストだけ\r\nで改行されている
