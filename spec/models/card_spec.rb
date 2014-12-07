@@ -228,6 +228,46 @@ RSpec.describe Card, :type => :model do
       it { expect(subject.other_power_toughness).to be_blank }
     end
 
+    context 'LvUp' do
+      let(:text){ <<-EOS }
+　英語名：Beastbreaker of Bala Ged
+日本語名：バーラ・ゲドの獣壊し（ばーらげどのけものこわし）
+　コスト：(１)(緑)
+　タイプ：クリーチャー --- 人間(Human)・戦士(Warrior)
+Ｌｖアップ(２)(緑)（(２)(緑)：この上にＬｖ(level)カウンターを１個置く。Ｌｖアップはソーサリーとしてのみ行う。）
+　Ｐ／Ｔ：2/2
+Lv1-3：
+
+　Ｐ／Ｔ：4/4
+Lv4+：
+トランプル
+　Ｐ／Ｔ：6/6
+イラスト：Karl Kopinski
+　セット：Rise of the Eldrazi
+　稀少度：アンコモン
+      EOS
+
+      it { expect(subject.name).to eq('Beastbreaker of Bala Ged') }
+      it { expect(subject.japanese_name).to eq('バーラ・ゲドの獣壊し') }
+      it { expect(subject.mana_cost).to eq('(1)(緑)') }
+      it { expect(subject.card_type).to eq('クリーチャー --- 人間(Human)・戦士(Warrior)') }
+      it { expect(subject.text).to eq(<<-EOS.strip) }
+Ｌｖアップ(２)(緑)（(２)(緑) : この上にＬｖ(level)カウンターを１個置く。Ｌｖアップはソーサリーとしてのみ行う。）
+Ｐ／Ｔ : 2/2
+Lv1-3 : 
+Ｐ／Ｔ : 4/4
+Lv4+ : 
+トランプル
+      EOS
+      it { expect(subject.power_toughness).to eq('6/6') }
+      it { expect(subject.converted_mana_cost).to eq(2) }
+
+      it { expect(subject.other_name).to be_blank }
+      it { expect(subject.other_japanese_name).to be_blank }
+      it { expect(subject.other_card_type).to be_blank }
+      it { expect(subject.other_text).to be_blank }
+    end
+
     it '変身カード'
   end
 end

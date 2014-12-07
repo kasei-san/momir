@@ -16,8 +16,14 @@ class Card < ActiveRecord::Base
     return if text.blank?
     parse_text = text.dup.strip
     parse_text.gsub!(/(　タイプ：[^\n]+\n)/, '\&テキスト：') # テキストだけヘッダが無いので追加
-    parse_text.gsub!(/テキスト：(.*?)\n　Ｐ／Ｔ/m) do |text| # テキスト内の改行を一旦削除
-      "テキスト：#{$1.gsub("\n", '@@@')}\n　Ｐ／Ｔ"
+    if parse_text =~ /Ｌｖアップ/
+      parse_text.gsub!(/テキスト：(.*)\n　Ｐ／Ｔ/m) do |text| # テキスト内の改行を一旦削除
+        "テキスト：#{$1.gsub("\n", '@@@').gsub('：', ' : ')}\n　Ｐ／Ｔ"
+      end
+    else
+      parse_text.gsub!(/テキスト：(.*?)\n　Ｐ／Ｔ/m) do |text| # テキスト内の改行を一旦削除
+        "テキスト：#{$1.gsub("\n", '@@@')}\n　Ｐ／Ｔ"
+      end
     end
     parse_text.gsub!("　", '').gsub!(/\r/, "") # テキストだけ\r\nで改行されている
     parse_text.gsub!(/^(イラスト|セット|稀少度).*($\n+|\z)/, '') # 変身・反転カードのときめんどいので削除
@@ -26,7 +32,7 @@ class Card < ActiveRecord::Base
 
     hash = card_data.first
     hash['日本語名'].sub!(/（.*$/, '')
-    hash['テキスト'].sub!('@@@', "\n")
+    hash['テキスト'].gsub!(/@+/, "\n")
     hash['コスト'].tr!('０-９', '0-9')
 
     converted_mana_cost = hash['コスト'].scan(/\([^\)]+\)/).map{|v| v.sub!(/\(([^\)]+)\)/, '\1')}.inject(0) do |result, cost|
