@@ -16,11 +16,14 @@ class Card < ActiveRecord::Base
     return if text.blank?
     parse_text = text.dup.strip
     parse_text.gsub!(/(　タイプ：[^\n]+\n)/, '\&テキスト：') # テキストだけヘッダが無いので追加
-    parse_text.gsub!(/テキスト：(.*?)\n　Ｐ／Ｔ/m) do |text| # テキスト内の改行を一旦削除
+    parse_text.gsub!("　", '').gsub!(/\r/, "") # テキストだけ\r\nで改行されている
+    # parse_text.gsub!(/テキスト：.*?)\n　Ｐ／Ｔ/m,  $1.gsub("\n", '@@@') )# テキスト内の改行を一旦削除
+    parse_text = parse_text.gsub(/テキスト：(.*?)\n　Ｐ／Ｔ/m) do |text|
+      p "テキスト：#{$1.gsub("\n", '@@@')}\n　Ｐ／Ｔ"
       "テキスト：#{$1.gsub("\n", '@@@')}\n　Ｐ／Ｔ"
     end
-    parse_text.gsub!("　", '').gsub!(/\r/, "") # テキストだけ\r\nで改行されている
     parse_text.gsub!(/^(イラスト|セット|稀少度).*($\n+|\z)/, '') # 変身・反転カードのときめんどいので削除
+    p parse_text
 
     card_data = parse_text.split("\n").map{|str| str.split('：', 2)}.each_slice(6).map(&:to_h)
 
@@ -45,7 +48,7 @@ class Card < ActiveRecord::Base
       if card_data.size >= 2
         other = card_data[1]
         other['日本語名'].sub!(/（.*$/, '')
-        other['テキスト'].sub!('@@@', "\n")
+        other['テキスト'].sub!(/\r/, '')
         other['コスト'].tr!('０-９', '0-9')
 
         result.other_name            = other['英語名']

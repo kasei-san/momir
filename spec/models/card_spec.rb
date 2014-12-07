@@ -4,20 +4,20 @@ RSpec.describe Card, :type => :model do
 
   shared_examples_for 'abattoir_ghoul' do
     it { expect(subject.name).to eq('Abattoir Ghoul') }
-    # it { expect(subject.japanese_name).to eq('肉切り屋のグール') }
-    # it { expect(subject.mana_cost).to eq('(3)(黒)') }
-    # it { expect(subject.card_type).to eq('クリーチャー --- ゾンビ(Zombie)') }
-    # it { expect(subject.text).to eq(<<-EOS.strip) }
-# 先制攻撃
-# このターン、肉切り屋のグールによってダメージを与えられたクリーチャーが１体死亡するたび、あなたはそのクリーチャーのタフネスに等しい点数のライフを得る。
-    # EOS
-    # it { expect(subject.power_toughness).to eq('3/2') }
-    # it { expect(subject.converted_mana_cost).to eq(4) }
+    it { expect(subject.japanese_name).to eq('肉切り屋のグール') }
+    it { expect(subject.mana_cost).to eq('(3)(黒)') }
+    it { expect(subject.card_type).to eq('クリーチャー --- ゾンビ(Zombie)') }
+    it { expect(subject.text).to eq(<<-EOS.strip) }
+先制攻撃
+このターン、肉切り屋のグールによってダメージを与えられたクリーチャーが１体死亡するたび、あなたはそのクリーチャーのタフネスに等しい点数のライフを得る。
+    EOS
+    it { expect(subject.power_toughness).to eq('3/2') }
+    it { expect(subject.converted_mana_cost).to eq(4) }
 
-    # it { expect(subject.other_name).to be_blank }
-    # it { expect(subject.other_japanese_name).to be_blank }
-    # it { expect(subject.other_card_type).to be_blank }
-    # it { expect(subject.other_text).to be_blank }
+    it { expect(subject.other_name).to be_blank }
+    it { expect(subject.other_japanese_name).to be_blank }
+    it { expect(subject.other_card_type).to be_blank }
+    it { expect(subject.other_text).to be_blank }
   end
 
   shared_examples_for 'alaborn_trooper' do
@@ -146,41 +146,45 @@ RSpec.describe Card, :type => :model do
 
     context '反転カード' do
       let(:text){ <<-EOS }
-　英語名：Student of Elements
-日本語名：精霊の学び手（せいれいのまなびて）
-　コスト：(１)(青)
-　タイプ：クリーチャー --- 人間(Human)・ウィザード(Wizard)
-精霊の学び手が飛行を持っているとき、精霊の学び手を反転する。
+　英語名：Akki Lavarunner
+日本語名：悪忌の溶岩走り（あっきのようがんばしり）
+　コスト：(３)(赤)
+　タイプ：クリーチャー --- ゴブリン(Goblin)・戦士(Warrior)
+速攻
+悪忌の溶岩走りが対戦相手にダメージを与えるたび、これを反転する。
 　Ｐ／Ｔ：1/1
-イラスト：Ittoku
-　英語名：Tobita, Master of Winds
-日本語名：風の達人、鳶太（かぜのたつじんとびた）
-　コスト：(１)(青)
-　タイプ：伝説のクリーチャー --- 人間(Human)・ウィザード(Wizard)
-あなたがコントロールするクリーチャーは飛行を持つ。
-　Ｐ／Ｔ：3/3
-イラスト：Ittoku
+イラスト：Matt Cavotta
+　英語名：Tok-Tok, Volcano Born
+日本語名：溶岩生まれのトクトク（ようがんうまれのとくとく）
+　コスト：(３)(赤)
+　タイプ：伝説のクリーチャー --- ゴブリン(Goblin)・シャーマン(Shaman)
+プロテクション（赤）
+赤の発生源１つがプレイヤーにダメージを与える場合、代わりにそれはそのダメージに１加えた点数だけダメージを与える。
+　Ｐ／Ｔ：2/2
+イラスト：Matt Cavotta
 　セット：Champions of Kamigawa
-　稀少度：アンコモン
+　稀少度：レア
       EOS
 
-      it { expect(subject.name).to eq('Student of Elements') }
-      it { expect(subject.japanese_name).to eq('精霊の学び手') }
-      it { expect(subject.mana_cost).to eq('(1)(青)') }
-      it { expect(subject.card_type).to eq('クリーチャー --- 人間(Human)・ウィザード(Wizard)') }
+      it { expect(subject.name).to eq('Akki Lavarunner') }
+      it { expect(subject.japanese_name).to eq('悪忌の溶岩走り') }
+      it { expect(subject.mana_cost).to eq('(3)(赤)') }
+      it { expect(subject.card_type).to eq('クリーチャー --- ゴブリン(Goblin)・戦士(Warrior)') }
       it { expect(subject.text).to eq(<<-EOS.strip) }
-精霊の学び手が飛行を持っているとき、精霊の学び手を反転する。
+速攻
+悪忌の溶岩走りが対戦相手にダメージを与えるたび、これを反転する。
       EOS
       it { expect(subject.power_toughness).to eq('1/1') }
-      it { expect(subject.converted_mana_cost).to eq(2) }
+      it { expect(subject.converted_mana_cost).to eq(4) }
 
-      it { expect(subject.other_name).to eq('Tobita, Master of Winds') }
-      it { expect(subject.other_japanese_name).to eq('風の達人、鳶太') }
-      it { expect(subject.other_card_type).to eq('伝説のクリーチャー --- 人間(Human)・ウィザード(Wizard)') }
+      it { expect(subject.other_name).to eq('Tok-Tok, Volcano Born') }
+      it { expect(subject.other_japanese_name).to eq('溶岩生まれのトクトク') }
+      it { expect(subject.other_card_type).to eq('伝説のクリーチャー --- ゴブリン(Goblin)・シャーマン(Shaman)') }
       it { expect(subject.other_text).to eq(<<-EOS.strip) }
-あなたがコントロールするクリーチャーは飛行を持つ。
+プロテクション（赤）
+赤の発生源１つがプレイヤーにダメージを与える場合、代わりにそれはそのダメージに１加えた点数だけダメージを与える。
       EOS
-      it { expect(subject.other_power_toughness).to eq('3/3') }
+      it { expect(subject.other_power_toughness).to eq('2/2') }
     end
 
     it '変身カード'
