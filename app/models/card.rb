@@ -6,10 +6,8 @@ class Card < ActiveRecord::Base
   def self.import(path)
     File.open(path) do |f|
       text = []
-      while f.gets("\n\n") do
-        text = $_
-        text += f.gets("\n\n") if text.split("\n").last =~ /^　タイプ：/ # バニラ
-        Card.parse(text.strip).save!
+      while f.gets("\n\n\n") do
+        Card.parse($_.strip).save!
       end
     end
   end
@@ -17,15 +15,18 @@ class Card < ActiveRecord::Base
   def self.parse(text)
     return if text.blank?
     parse_text = text.dup.strip
-    parse_text.gsub!(/^　タイプ：.*$\n/, '\&テキスト：')     # テキストだけヘッダが無いので追加
-    parse_text.gsub!("　", '').gsub!(/([^\r])\n/, "\\1\n\n") # テキストだけ\r\nで改行されている
+    parse_text.gsub!(/(　タイプ：[^\n]+\n)/, '\&テキスト：') # テキストだけヘッダが無いので追加
+    if parse_text =~ /テキスト：(.*?)\n　Ｐ／Ｔ/m # テキスト内の改行を一旦削除
+      parse_text.sub!(/テキスト：(.*?)\n　Ｐ／Ｔ/m, "テキスト：#{$1.gsub("\n", '@@@')}\n　Ｐ／Ｔ")
+    end
+    parse_text.gsub!("　", '').gsub!(/\r/, "") # テキストだけ\r\nで改行されている
     parse_text.gsub!(/^(イラスト|セット|稀少度).*($\n+|\z)/, '') # 変身・反転カードのときめんどいので削除
 
-    card_data = parse_text.split("\n\n").map{|str| str.split('：', 2)}.each_slice(6).map(&:to_h)
+    card_data = parse_text.split("\n").map{|str| str.split('：', 2)}.each_slice(6).map(&:to_h)
 
     hash = card_data.first
     hash['日本語名'].sub!(/（.*$/, '')
-    hash['テキスト'].sub!(/\r/, '')
+    hash['テキスト'].sub!('@@@', "\n")
     hash['コスト'].tr!('０-９', '0-9')
 
     converted_mana_cost = hash['コスト'].scan(/\([^\)]+\)/).map{|v| v.sub!(/\(([^\)]+)\)/, '\1')}.inject(0) do |result, cost|
