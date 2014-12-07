@@ -187,6 +187,47 @@ RSpec.describe Card, :type => :model do
       it { expect(subject.other_power_toughness).to eq('2/2') }
     end
 
+
+    context '反転カード(エンチャント)' do
+      let(:text){ <<-EOS }
+　英語名：Erayo, Soratami Ascendant
+日本語名：上位の空民、エラヨウ（じょういのそらたみえらよう）
+　コスト：(１)(青)
+　タイプ：伝説のクリーチャー --- ムーンフォーク(Moonfolk)・モンク(Monk)
+飛行
+いずれかのターンに４つ目の呪文が唱えられるたび、上位の空民、エラヨウを反転する。
+　Ｐ／Ｔ：1/1
+イラスト：Matt Cavotta
+　英語名：Erayo's Essence
+日本語名：エラヨウの本質（えらようのほんしつ）
+　コスト：(１)(青)
+　タイプ：伝説のエンチャント
+対戦相手１人が各ターンに最初に呪文を唱えるたび、その呪文を打ち消す。
+イラスト：Matt Cavotta
+　セット：Saviors of Kamigawa
+　稀少度：レア
+      EOS
+
+      it { expect(subject.name).to eq('Erayo, Soratami Ascendant') }
+      it { expect(subject.japanese_name).to eq('上位の空民、エラヨウ') }
+      it { expect(subject.mana_cost).to eq('(1)(青)') }
+      it { expect(subject.card_type).to eq('伝説のクリーチャー --- ムーンフォーク(Moonfolk)・モンク(Monk)') }
+      it { expect(subject.text).to eq(<<-EOS.strip) }
+飛行
+いずれかのターンに４つ目の呪文が唱えられるたび、上位の空民、エラヨウを反転する。
+      EOS
+      it { expect(subject.power_toughness).to eq('1/1') }
+      it { expect(subject.converted_mana_cost).to eq(2) }
+
+      it { expect(subject.other_name).to eq("Erayo's Essence") }
+      it { expect(subject.other_japanese_name).to eq('エラヨウの本質') }
+      it { expect(subject.other_card_type).to eq('伝説のエンチャント') }
+      it { expect(subject.other_text).to eq(<<-EOS.strip) }
+対戦相手１人が各ターンに最初に呪文を唱えるたび、その呪文を打ち消す。
+      EOS
+      it { expect(subject.other_power_toughness).to be_blank }
+    end
+
     it '変身カード'
   end
 end
