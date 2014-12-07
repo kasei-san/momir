@@ -23,7 +23,7 @@ RSpec.describe Card, :type => :model do
 
   describe '#import' do
     let(:path) { File.join(*%W[#{File.dirname(__FILE__)} .. data card_data.txt]) }
-    it { expect { Card.import(path) }.to change(Card, :count).from(0).to(2) }
+    it { expect { Card.import(path) }.to change(Card, :count).from(0).to(3) }
 
     describe 'check card_data' do
       before { Card.import(path) }
@@ -49,6 +49,33 @@ RSpec.describe Card, :type => :model do
     EOS
 
     it_should_behave_like 'abattoir_ghoul'
+
+    context 'vanilla' do
+      let(:text){ (<<-EOS).strip }
+　英語名：Alaborn Trooper
+日本語名：アラボーンの強兵（あらぼーんのきょうへい）
+　コスト：(２)(白)
+　タイプ：クリーチャー --- 人間(Human)・兵士(Soldier)
+
+　Ｐ／Ｔ：2/3
+イラスト：Lubov
+　セット：Portal Second Age
+　稀少度：コモン
+      EOS
+
+      it { expect(subject.name).to eq('Alaborn Trooper') }
+      it { expect(subject.japanese_name).to eq('アラボーンの強兵') }
+      it { expect(subject.mana_cost).to eq('(2)(白)') }
+      it { expect(subject.card_type).to eq('クリーチャー --- 人間(Human)・兵士(Soldier)') }
+      it { expect(subject.text).to be_blank }
+      it { expect(subject.power_toughness).to eq('2/3') }
+      it { expect(subject.converted_mana_cost).to eq(3) }
+
+      it { expect(subject.other_name).to be_blank }
+      it { expect(subject.other_japanese_name).to be_blank }
+      it { expect(subject.other_card_type).to be_blank }
+      it { expect(subject.other_text).to be_blank }
+    end
 
     context '混成マナコスト' do
       let(:text){ <<-EOS }

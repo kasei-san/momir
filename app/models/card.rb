@@ -1,15 +1,22 @@
 class Card < ActiveRecord::Base
+
+  # How to use
+  #   $ rails runner "Card.import('./tmp/card_data.txt')"
+  #
   def self.import(path)
     File.open(path) do |f|
+      text = []
       while f.gets("\n\n") do
-        Card.parse($_.strip).save if $_.strip.present?
+        text = $_
+        text += f.gets("\n\n") if text.split("\n").last =~ /^　タイプ：/ # バニラ
+        Card.parse(text.strip).save!
       end
     end
   end
 
   def self.parse(text)
     return if text.blank?
-    parse_text = text.dup
+    parse_text = text.dup.strip
     parse_text.gsub!(/^　タイプ：.*$\n/, '\&テキスト：')     # テキストだけヘッダが無いので追加
     parse_text.gsub!("　", '').gsub!(/([^\r])\n/, "\\1\n\n") # テキストだけ\r\nで改行されている
     parse_text.gsub!(/^(イラスト|セット|稀少度).*($\n+|\z)/, '') # 変身・反転カードのときめんどいので削除
