@@ -268,6 +268,37 @@ Lv4+ :
       it { expect(subject.other_text).to be_blank }
     end
 
+    context '色指標' do
+      let(:text){ <<-EOS }
+　英語名：Crimson Kobolds
+日本語名：真紅のコボルド
+　コスト：(０)
+　色指標：〔赤〕
+　タイプ：クリーチャー --- コボルド(Kobold)
+
+　Ｐ／Ｔ：0/1
+イラスト：Anson Maddocks
+　セット：Legends
+　稀少度：コモン2
+      EOS
+
+      it { expect(subject.name).to eq('Crimson Kobolds') }
+      it { expect(subject.japanese_name).to eq('真紅のコボルド') }
+      it { expect(subject.mana_cost).to eq('(0)') }
+      it { expect(subject.card_type).to eq('クリーチャー --- コボルド(Kobold)') }
+      it { expect(subject.text).to eq(<<-EOS.strip) }
+色指標：〔赤〕
+      EOS
+      it { expect(subject.power_toughness).to eq('0/1') }
+      it { expect(subject.converted_mana_cost).to eq(0) }
+
+      it { expect(subject.other_name).to be_blank }
+      it { expect(subject.other_japanese_name).to be_blank }
+      it { expect(subject.other_card_type).to be_blank }
+      it { expect(subject.other_text).to be_blank }
+
+    end
+
     it '変身カード'
   end
 end

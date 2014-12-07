@@ -16,6 +16,12 @@ class Card < ActiveRecord::Base
     return if text.blank?
     parse_text = text.dup.strip
     parse_text.gsub!(/(　タイプ：[^\n]+\n)/, '\&テキスト：') # テキストだけヘッダが無いので追加
+    parse_text.gsub!(/^(　色指標：[^\n]+)\n(.*?テキスト：)/m ) do |text|
+      "#{$2}#{$1}"
+    end
+
+
+
     if parse_text =~ /Ｌｖアップ/
       parse_text.gsub!(/テキスト：(.*)\n　Ｐ／Ｔ/m) do |text| # テキスト内の改行を一旦削除
         "テキスト：#{$1.gsub("\n", '@@@').gsub('：', ' : ')}\n　Ｐ／Ｔ"
