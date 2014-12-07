@@ -266,6 +266,7 @@ Lv4+ :
       it { expect(subject.other_japanese_name).to be_blank }
       it { expect(subject.other_card_type).to be_blank }
       it { expect(subject.other_text).to be_blank }
+      it { expect(subject.other_power_toughness).to be_blank }
     end
 
     context '色指標' do
@@ -296,9 +297,52 @@ Lv4+ :
       it { expect(subject.other_japanese_name).to be_blank }
       it { expect(subject.other_card_type).to be_blank }
       it { expect(subject.other_text).to be_blank }
-
+      it { expect(subject.other_power_toughness).to be_blank }
     end
 
-    it '変身カード'
+    context '変身カード' do
+      let(:text){ <<-EOS }
+　英語名：Daybreak Ranger
+日本語名：夜明けのレインジャー（よあけのれいんじゃー）
+　コスト：(２)(緑)
+　タイプ：クリーチャー --- 人間(Human)・射手(Archer)・狼男(Werewolf)
+(Ｔ)：飛行を持つクリーチャー１体を対象とする。夜明けのレインジャーはそれに２点のダメージを与える。
+各アップキープの開始時に、直前のターンに呪文が唱えられていなかった場合、夜明けのレインジャーを変身させる。
+　Ｐ／Ｔ：2/2
+イラスト：Steve Prescott
+　英語名：Nightfall Predator
+日本語名：黄昏の捕食者（たそがれのほしょくしゃ）
+　コスト：
+　色指標：〔緑〕
+　タイプ：クリーチャー --- 狼男(Werewolf)
+(赤),(Ｔ)：クリーチャー１体を対象とする。黄昏の捕食者はそれと格闘を行う。（それぞれはもう一方に自身のパワーに等しい点数のダメージを与える。）
+各アップキープの開始時に、直前のターンにプレイヤー１人が２つ以上の呪文を唱えていた場合、黄昏の捕食者を変身させる。
+　Ｐ／Ｔ：4/4
+イラスト：Steve Prescott
+　セット：Innistrad
+　稀少度：レア
+      EOS
+
+      it { expect(subject.name).to eq('Daybreak Ranger') }
+      it { expect(subject.japanese_name).to eq('夜明けのレインジャー') }
+      it { expect(subject.mana_cost).to eq('(2)(緑)') }
+      it { expect(subject.card_type).to eq('クリーチャー --- 人間(Human)・射手(Archer)・狼男(Werewolf)') }
+      it { expect(subject.text).to eq(<<-EOS.strip) }
+(Ｔ)：飛行を持つクリーチャー１体を対象とする。夜明けのレインジャーはそれに２点のダメージを与える。
+各アップキープの開始時に、直前のターンに呪文が唱えられていなかった場合、夜明けのレインジャーを変身させる。
+      EOS
+      it { expect(subject.power_toughness).to eq('2/2') }
+      it { expect(subject.converted_mana_cost).to eq(3) }
+
+      it { expect(subject.other_name).to eq('Nightfall Predator') }
+      it { expect(subject.other_japanese_name).to eq('黄昏の捕食者') }
+      it { expect(subject.other_card_type).to eq('クリーチャー --- 狼男(Werewolf)') }
+      it { expect(subject.other_text).to eq(<<-EOS.strip) }
+色指標：〔緑〕
+(赤),(Ｔ)：クリーチャー１体を対象とする。黄昏の捕食者はそれと格闘を行う。（それぞれはもう一方に自身のパワーに等しい点数のダメージを与える。）
+各アップキープの開始時に、直前のターンにプレイヤー１人が２つ以上の呪文を唱えていた場合、黄昏の捕食者を変身させる。
+      EOS
+      it { expect(subject.other_power_toughness).to eq('4/4') }
+    end
   end
 end

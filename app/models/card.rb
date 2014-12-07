@@ -17,10 +17,8 @@ class Card < ActiveRecord::Base
     parse_text = text.dup.strip
     parse_text.gsub!(/(　タイプ：[^\n]+\n)/, '\&テキスト：') # テキストだけヘッダが無いので追加
     parse_text.gsub!(/^(　色指標：[^\n]+)\n(.*?テキスト：)/m ) do |text|
-      "#{$2}#{$1}"
+      "#{$2}#{$1}\n"
     end
-
-
 
     if parse_text =~ /Ｌｖアップ/
       parse_text.gsub!(/テキスト：(.*)\n　Ｐ／Ｔ/m) do |text| # テキスト内の改行を一旦削除
@@ -50,20 +48,20 @@ class Card < ActiveRecord::Base
       japanese_name:        hash['日本語名'],
       mana_cost:            hash['コスト'],
       card_type:            hash['タイプ'],
-      text:                 hash['テキスト'],
+      text:                 hash['テキスト'].strip,
       power_toughness:      hash['Ｐ／Ｔ'],
       converted_mana_cost: converted_mana_cost
     }).tap do |result|
       if card_data.size >= 2
         other = card_data[1]
         other['日本語名'].sub!(/（.*$/, '')
-        other['テキスト'].sub!('@@@', "\n")
+        other['テキスト'].gsub!(/@+/, "\n")
         other['コスト'].tr!('０-９', '0-9')
 
         result.other_name            = other['英語名']
         result.other_japanese_name   = other['日本語名']
         result.other_card_type       = other['タイプ']
-        result.other_text            = other['テキスト']
+        result.other_text            = other['テキスト'].strip
         result.other_power_toughness = other['Ｐ／Ｔ']
       end
     end
