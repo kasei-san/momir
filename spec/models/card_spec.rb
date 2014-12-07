@@ -389,4 +389,32 @@ Lv4+ :
       it { expect(subject.other_power_toughness).to be_blank }
     end
   end
+
+  describe '#pickup' do
+    subject { Card.pickup(converted_mana_cost) }
+
+    context 'nothing card' do
+      let(:converted_mana_cost) { 9999 }
+      it { is_expected.to be_blank }
+    end
+
+    context 'Card exist' do
+      before do
+        Card.parse(<<-EOS).save!
+ 　英語名：Abattoir Ghoul
+日本語名：肉切り屋のグール（にくきりやのぐーる）
+　コスト：(３)(黒)
+　タイプ：クリーチャー --- ゾンビ(Zombie)
+先制攻撃#{0x0D.chr}
+このターン、肉切り屋のグールによってダメージを与えられたクリーチャーが１体死亡するたび、あなたはそのクリーチャーのタフネスに等しい点数のライフを得る。
+　Ｐ／Ｔ：3/2
+イラスト：Volkan Baga
+　セット：Innistrad
+　稀少度：アンコモン
+        EOS
+      end
+      let(:converted_mana_cost) { 4 }
+      it_should_behave_like 'abattoir_ghoul'
+    end
+  end
 end

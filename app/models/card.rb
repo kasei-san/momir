@@ -1,7 +1,7 @@
 class Card < ActiveRecord::Base
 
   # How to use
-  #   $ rails runner "Card.import('./tmp/card_data.txt')"
+  #   $ rails runner "Card.destroy; Card.import('./tmp/card_data.txt')"
   #
   def self.import(path)
     File.open(path) do |f|
@@ -10,6 +10,11 @@ class Card < ActiveRecord::Base
         Card.parse($_.strip).save!
       end
     end
+  end
+
+  def self.pickup(converted_mana_cost)
+    cards = Card.where({:converted_mana_cost => converted_mana_cost})
+    cards[rand(cards.count)]
   end
 
   def self.parse(text)
