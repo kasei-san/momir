@@ -53,6 +53,15 @@ RSpec.describe CardsController, :type => :controller do
         it { is_expected.to be_success }
         it { expect(subject.body).to eq('null') }
       end
+
+      context 'converted_mana_cost is nil' do
+        subject do
+          get 'pickup'
+          response
+        end
+        it { is_expected.to be_success }
+        it { p subject.body }
+      end
     end
   end
 end

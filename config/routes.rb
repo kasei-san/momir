@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   # get 'cards/pickup'
 
-  # get 'cards/pickup/' => 'cards#pickup'
+  get 'cards/pickup/' => 'cards#pickup'
   match 'cards/pickup/:converted_mana_cost' => 'cards#pickup', as: :pickup, via: [:get]
 
   # The priority is based upon order of creation: first created -> highest priority.
