@@ -19,10 +19,13 @@ RSpec.describe CardsController, :type => :controller do
     end
 
     context 'converted_mana_cost exist' do
-      it "returns http success" do
+      subject do
         get 'pickup', converted_mana_cost: 4
-        expect(response).to be_success
+        response
       end
+
+      it { is_expected.to be_success }
+      it { expect(subject.headers['Content-Type']).to a_string_including('application/json') }
 
       describe 'returned JSON check' do
         subject do
@@ -47,7 +50,7 @@ RSpec.describe CardsController, :type => :controller do
           get 'pickup', converted_mana_cost: 9999
           response
         end
-        it { expect(subject).to be_success }
+        it { is_expected.to be_success }
         it { expect(subject.body).to eq('null') }
       end
     end
