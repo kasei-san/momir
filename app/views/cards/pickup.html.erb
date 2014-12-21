@@ -1,2 +1,7 @@
 <h1>Cards#pickup</h1>
 <p>Find me in app/views/cards/pickup.html.erb</p>
+<%= form_tag({action: :pickup}, {method: :get, remote: true}) do %>
+  <%= select(:converted_mana_cost, nil, (0.upto(16).to_a)) %>
+  <%= submit_tag('sumbit') %>
+<% end %>
+<div id="pickup_card"></div>

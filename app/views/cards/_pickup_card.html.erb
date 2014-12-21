@@ -1,0 +1,11 @@
+<% if @card %>
+  <h2><%= @card.mana_cost %> : <%= @card.japanese_name %></h2>
+  <h3><%= @card.card_type %></h3>
+  <div>
+    <%= @card.text %>
+  </div>
+  <div><%= @card.power_toughness %></div>
+<% else %>
+  <h2>そのマナコストのカードはありません</h2>
+<% end %>
+

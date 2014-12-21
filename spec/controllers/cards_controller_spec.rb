@@ -18,50 +18,95 @@ RSpec.describe CardsController, :type => :controller do
       EOS
     end
 
-    context 'converted_mana_cost exist' do
-      subject do
-        get 'pickup', converted_mana_cost: 4
-        response
-      end
+    # context 'converted_mana_cost exist' do
+      # subject do
+        # get 'pickup', converted_mana_cost: 4
+        # response
+      # end
 
-      it { is_expected.to be_success }
-      it { expect(subject.headers['Content-Type']).to a_string_including('application/json') }
+      # it { is_expected.to be_success }
+      # it { expect(subject.headers['Content-Type']).to a_string_including('application/json') }
 
-      describe 'returned JSON check' do
+      # describe 'returned JSON check' do
+        # subject do
+          # get 'pickup', converted_mana_cost: 4
+          # JSON.load(response.body).with_indifferent_access
+        # end
+
+        # it { expect(subject[:name]).to eq('Abattoir Ghoul') }
+        # it { expect(subject[:japanese_name]).to eq('肉切り屋のグール') }
+        # it { expect(subject[:mana_cost]).to eq('(3)(黒)') }
+        # it { expect(subject[:card_type]).to eq('クリーチャー --- ゾンビ(Zombie)') }
+        # it { expect(subject[:text]).to eq(<<-EOS.strip) }
+# 先制攻撃
+# このターン、肉切り屋のグールによってダメージを与えられたクリーチャーが１体死亡するたび、あなたはそのクリーチャーのタフネスに等しい点数のライフを得る。
+        # EOS
+        # it { expect(subject[:power_toughness]).to eq('3/2') }
+        # it { expect(subject[:converted_mana_cost]).to eq(4) }
+      # end
+
+      # context 'No such converted_mana_cost' do
+        # subject do
+          # get 'pickup', converted_mana_cost: 9999
+          # response
+        # end
+        # it { is_expected.to be_success }
+        # it { expect(subject.body).to eq('null') }
+      # end
+    # end
+
+    context 'converted_mana_cost is not nil' do
+      context 'pickup card is exist' do
         subject do
-          get 'pickup', converted_mana_cost: 4
-          JSON.load(response.body).with_indifferent_access
+          xhr :get, :pickup, converted_mana_cost: [4]
+          response
         end
+        it { is_expected.to be_success }
+        it { is_expected.to render_template(:pickup) }
 
-        it { expect(subject[:name]).to eq('Abattoir Ghoul') }
-        it { expect(subject[:japanese_name]).to eq('肉切り屋のグール') }
-        it { expect(subject[:mana_cost]).to eq('(3)(黒)') }
-        it { expect(subject[:card_type]).to eq('クリーチャー --- ゾンビ(Zombie)') }
-        it { expect(subject[:text]).to eq(<<-EOS.strip) }
+        describe '@card' do
+          subject do
+            xhr :get, :pickup, converted_mana_cost: [4]
+            assigns(:card)
+          end
+          it { expect(subject[:name]).to eq('Abattoir Ghoul') }
+          it { expect(subject[:japanese_name]).to eq('肉切り屋のグール') }
+          it { expect(subject[:mana_cost]).to eq('(3)(黒)') }
+          it { expect(subject[:card_type]).to eq('クリーチャー --- ゾンビ(Zombie)') }
+          it { expect(subject[:text]).to eq(<<-EOS.strip) }
 先制攻撃
 このターン、肉切り屋のグールによってダメージを与えられたクリーチャーが１体死亡するたび、あなたはそのクリーチャーのタフネスに等しい点数のライフを得る。
         EOS
-        it { expect(subject[:power_toughness]).to eq('3/2') }
-        it { expect(subject[:converted_mana_cost]).to eq(4) }
+          it { expect(subject[:power_toughness]).to eq('3/2') }
+          it { expect(subject[:converted_mana_cost]).to eq(4) }
+        end
       end
 
-      context 'No such converted_mana_cost' do
+      context 'pickup card is not exist' do
         subject do
-          get 'pickup', converted_mana_cost: 9999
+          xhr :get, :pickup, converted_mana_cost: [999]
           response
         end
         it { is_expected.to be_success }
-        it { expect(subject.body).to eq('null') }
-      end
+        it { is_expected.to render_template(:pickup) }
 
-      context 'converted_mana_cost is nil' do
-        subject do
-          get 'pickup'
-          response
+        describe '@card' do
+          subject do
+            xhr :get, :pickup, converted_mana_cost: [999]
+            assigns(:card)
+          end
+          it { is_expected.to be_nil }
         end
-        it { is_expected.to be_success }
-        it { p subject.body }
       end
+    end
+
+    context 'converted_mana_cost is nil' do
+      subject do
+        get :pickup
+        response
+      end
+      it { is_expected.to be_success }
+      it { is_expected.to render_template(:pickup) }
     end
   end
 end
